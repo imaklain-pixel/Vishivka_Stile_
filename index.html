@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+    <title>Студия Вышивки | Эксклюзивная вышивка на одежде</title>
+    <style>
+        /* ---------- Базовые сбросы ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+            color: #1a1a2e;
+            background: #fcf9f5;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ---------- Шапка / Навигация ---------- */
+        header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 3px solid #e94560;
+        }
+
+        .logo {
+            color: #fff;
+            font-size: 1.5em;
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
+        }
+        .logo span {
+            background: linear-gradient(135deg, #e94560, #ff6b6b, #feca57);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+        .logo .diamond {
+            color: #feca57;
+            -webkit-text-fill-color: #feca57;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: #dfe6e9;
+            text-decoration: none;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 5px 0;
+            border-bottom: 2px solid transparent;
+            letter-spacing: 0.5px;
+            position: relative;
+        }
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #e94560, #feca57);
+            transition: width 0.3s;
+        }
+        nav a:hover::after {
+            width: 100%;
+        }
+        nav a:hover {
+            color: #feca57;
+        }
+
+        /* ---------- Главный экран (Hero) ---------- */
+        .hero {
+            background: 
+                linear-gradient(135deg, rgba(26, 26, 46, 0.75), rgba(15, 52, 96, 0.80)),
+                url('https://i5.storeland.net/2/3710/137093170/afacdb/vyshivalnye-nitki-madeira-rayon-40-1000m.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 75vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(233, 69, 96, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(254, 202, 87, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(106, 13, 173, 0.10) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            background: linear-gradient(to top, #fcf9f5, transparent);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5em, 8vw, 4.5em);
+            font-weight: 200;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            text-shadow: 0 4px 40px rgba(0,0,0,0.6);
+        }
+        .hero h1 strong {
+            background: linear-gradient(135deg, #e94560, #feca57, #6a0dad, #00b894, #e94560);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            animation: gradientShift 5s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hero p {
+            font-size: clamp(1em, 2vw, 1.4em);
+            max-width: 600px;
+            margin-bottom: 35px;
+            opacity: 0.95;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            color: #dfe6e9;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #e94560, #c0392b);
+            color: white;
+            padding: 18px 50px;
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: 700;
+            border-radius: 50px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 6px 30px rgba(233, 69, 96, 0.5);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+        }
+        .btn:hover::before {
+            transform: rotate(45deg) scale(1.5);
+        }
+        .btn:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 10px 45px rgba(233, 69, 96, 0.7);
+        }
+
+        /* ---------- Основной контент ---------- */
+        .main-content {
+            max-width: 1100px;
+            margin: -40px auto 0;
+            padding: 0 20px 50px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            flex: 1;
+            position: relative;
+            z-index: 3;
+        }
+
+        .services h2 {
+            font-size: 2em;
+            font-weight: 300;
+            color: #1a1a2e;
+            margin-bottom: 30px;
+            border-left: 5px solid #e94560;
+            padding-left: 20px;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #e94560, #feca57);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            border: 2px solid rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #e94560, #feca57, #6a0dad);
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 45px rgba(0,0,0,0.12);
+            border-color: rgba(233, 69, 96, 0.3);
+        }
+        .service-card h3 {
+            color: #1a1a2e;
+            font-size: 1.15em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .service-card p {
+            font-size: 0.95em;
+            color: #555;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* ---------- Портфолио ---------- */
+        .portfolio {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px 20px 60px;
+        }
+
+        .portfolio h2 {
+            font-size: 2em;
+            font-weight: 300;
+            color: #1a1a2e;
+            margin-bottom: 30px;
+            border-left: 5px solid #e94560;
+            padding-left: 20px;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #e94560, #feca57);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+        }
+
+        .portfolio-item {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 20px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.06);
+            transition: all 0.3s;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border: 2px dashed #e8e4de;
+            background: linear-gradient(135deg, #fff, #f8f5f0);
+            cursor: default;
+        }
+        .portfolio-item:nth-child(1) { border-color: #e94560; }
+        .portfolio-item:nth-child(2) { border-color: #feca57; }
+        .portfolio-item:nth-child(3) { border-color: #6a0dad; }
+        .portfolio-item:nth-child(4) { border-color: #00b894; }
+
+        .portfolio-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 45px rgba(0,0,0,0.1);
+        }
+        .portfolio-item .icon {
+            font-size: 3.5em;
+            margin-bottom: 12px;
+            opacity: 0.8;
+        }
+        .portfolio-item .label {
+            color: #555;
+            font-size: 0.95em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .portfolio-item .coming {
+            color: #b3a89a;
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+
+        /* ---------- Правая колонка (САЙДБАР) ---------- */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .widget {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.06);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .widget h3 {
+            color: #1a1a2e;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #e94560, #feca57);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .contacts-list {
+            list-style: none;
+        }
+
+        .contacts-list li {
+            margin-bottom: 14px;
+            font-size: 0.95em;
+            color: #555;
+            padding: 8px 12px;
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+        .contacts-list li:hover {
+            background: rgba(233, 69, 96, 0.05);
+        }
+
+        .contacts-list strong {
+            color: #1a1a2e;
+        }
+
+        .contacts-list a {
+            color: #2d2d2d;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .contacts-list a:hover {
+            color: #e94560;
+        }
+
+        /* ====== КНОПКИ МЕССЕНДЖЕРОВ В КОНТАКТАХ ====== */
+        .messenger-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 5px;
+        }
+
+        .messenger-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 30px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .messenger-links a:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-wa {
+            background: #25D366;
+        }
+
+        .btn-tg {
+            background: #0088cc;
+        }
+
+        /* ====== КАТУШКИ НИТОК ====== */
+        .thread-spools {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #f0ede8;
+        }
+
+        .spool {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        .spool:hover {
+            transform: scale(1.15) translateY(-3px);
+        }
+
+        .spool .spool-body {
+            width: 28px;
+            height: 22px;
+            border-radius: 4px 4px 8px 8px;
+            position: relative;
+            border: 2px solid rgba(0,0,0,0.08);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .spool .spool-body::before,
+        .spool .spool-body::after {
+            content: '';
+            position: absolute;
+            left: -4px;
+            right: -4px;
+            height: 4px;
+            background: rgba(0,0,0,0.06);
+            border-radius: 2px;
+        }
+        .spool .spool-body::before {
+            top: -2px;
+        }
+        .spool .spool-body::after {
+            bottom: -2px;
+        }
+
+        .spool .thread-wrap {
+            width: 100%;
+            height: 100%;
+            border-radius: 3px;
+            background: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spool .thread-wrap::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                90deg,
+                rgba(255,255,255,0.15) 0px,
+                rgba(255,255,255,0.15) 2px,
+                transparent 2px,
+                transparent 5px
+            );
+            border-radius: 3px;
+        }
+
+        .spool .spool-label {
+            font-size: 0.55em;
+            color: #999;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        /* Цвета катушек */
+        .spool-red .spool-body { background: linear-gradient(135deg, #e94560, #c0392b); }
+        .spool-yellow .spool-body { background: linear-gradient(135deg, #feca57, #f9a825); }
+        .spool-purple .spool-body { background: linear-gradient(135deg, #6a0dad, #4a0080); }
+        .spool-green .spool-body { background: linear-gradient(135deg, #00b894, #00856a); }
+        .spool-blue .spool-body { background: linear-gradient(135deg, #0984e3, #0652DD); }
+        .spool-pink .spool-body { background: linear-gradient(135deg, #fd79a8, #e84393); }
+        .spool-gold .spool-body { background: linear-gradient(135deg, #fdcb6e, #e17055); }
+        .spool-terracotta .spool-body { background: linear-gradient(135deg, #e17055, #d63031); }
+
+        /* ---------- Модальное окно ---------- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 24px;
+            padding: 40px 35px;
+            max-width: 420px;
+            width: 90%;
+            position: relative;
+            animation: slideUp 0.4s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.3s;
+            line-height: 1;
+        }
+        .modal-close:hover {
+            color: #e94560;
+        }
+
+        .modal h2 {
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #e94560, #feca57);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal .subtitle {
+            color: #888;
+            font-size: 0.95em;
+            margin-bottom: 25px;
+        }
+
+        .modal label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+            font-size: 0.95em;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            outline: none;
+            background: #f8f8f8;
+        }
+        .modal input:focus {
+            border-color: #e94560;
+            box-shadow: 0 0 0 4px rgba(233, 69, 96, 0.1);
+            background: white;
+        }
+
+        .modal .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #e94560, #c0392b);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+        .modal .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(233, 69, 96, 0.4);
+        }
+
+        .modal .btn-submit:active {
+            transform: scale(0.97);
+        }
+
+        .modal .success-message {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .modal .success-message .check {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+        .modal .success-message h3 {
+            color: #1a1a2e;
+            margin-bottom: 5px;
+        }
+        .modal .success-message p {
+            color: #888;
+        }
+
+        /* ---------- Плавающие кнопки (ТОЛЬКО ОДИН РАЗ!) ---------- */
+        .floating-buttons {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 999;
+        }
+
+        .floating-buttons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            color: white;
+            font-size: 28px;
+            text-decoration: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            transition: all 0.3s ease;
+        }
+
+        .floating-buttons a:hover {
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+        }
+
+        .floating-btn-wa {
+            background: #25D366;
+        }
+
+        .floating-btn-tg {
+            background: #0088cc;
+        }
+
+        /* ---------- Подвал ---------- */
+        footer {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #a0aab5;
+            text-align: center;
+            padding: 35px 20px;
+            margin-top: auto;
+            border-top: 3px solid #e94560;
+        }
+        footer a {
+            color: #feca57;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        footer a:hover {
+            color: #e94560;
+            text-decoration: underline;
+        }
+        footer .footer-divider {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #e94560, #feca57, #6a0dad);
+            margin: 15px auto;
+            border-radius: 10px;
+        }
+
+        /* ---------- Медиа-запросы ---------- */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                margin-top: 20px;
+            }
+            header {
+                flex-direction: column;
+                justify-content: center;
+                text-align: center;
+            }
+            nav ul {
+                justify-content: center;
+            }
+            .floating-buttons {
+                bottom: 20px;
+                right: 20px;
+            }
+            .floating-buttons a {
+                width: 50px;
+                height: 50px;
+                font-size: 22px;
+            }
+            .modal {
+                padding: 30px 20px;
+            }
+            .spool .spool-body {
+                width: 24px;
+                height: 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.2em;
+                letter-spacing: 2px;
+            }
+            nav ul {
+                gap: 12px;
+            }
+            nav a {
+                font-size: 0.85em;
+            }
+            .btn {
+                padding: 14px 30px;
+                font-size: 0.95em;
+            }
+            .service-card {
+                padding: 20px 18px;
+            }
+            .portfolio-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 15px;
+            }
+            .spool .spool-body {
+                width: 20px;
+                height: 16px;
+            }
+            .spool .spool-label {
+                font-size: 0.45em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><span class="diamond">✦</span> <span>Вышивка Стиль</span></div>
+        <nav>
+            <ul>
+                <li><a href="#services">Услуги</a></li>
+                <li><a href="#portfolio">Портфолио</a></li>
+                <li><a href="#contacts">Контакты</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Эксклюзивная <strong>вышивка</strong><br>на вашей одежде</h1>
+            <p>Создаем уникальный стиль, брендируем корпоративную одежду и воплощаем любые ваши идеи в нитях с гарантией качества.</p>
+            <button class="btn" id="openModalBtn">Рассчитать стоимость</button>
+        </div>
+    </section>
+
+    <main class="main-content" id="services">
+        <section class="services">
+            <h2>Наши услуги</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>🎨 Индивидуальный дизайн</h3>
+                    <p>Вышьем ваш рисунок, надпись или логотип на худи, футболках и свитшотах.</p>
+                </div>
+                <div class="service-card">
+                    <h3>👔 Корпоративный мерч</h3>
+                    <p>Брендирование униформы для вашего бизнеса тиражом от 1 шт.</p>
+                </div>
+                <div class="service-card">
+                    <h3>🛡️ Шевроны и патчи</h3>
+                    <p>Изготовление нашивок любой сложности с креплением на липучке или термопленке.</p>
+                </div>
+            </div>
+        </section>
+
+        <aside class="sidebar" id="contacts">
+            <div class="widget">
+                <h3>📬 Свяжитесь с нами</h3>
+                <ul class="contacts-list">
+                    <li>
+                        <strong>Телефон:</strong> 
+                        <a href="tel:+79776975580">+7 (977) 697-55-80</a>
+                    </li>
+                    <li>
+                        <strong>Email:</strong> 
+                        <a href="mailto:imaklain@gmail.com">imaklain@gmail.com</a>
+                    </li>
+                    <li>
+                        <strong>Мессенджеры:</strong>
+                        <div class="messenger-links">
+                            <a href="https://wa.me/79776975580" target="_blank" class="btn-wa">💬 WhatsApp</a>
+                            <a href="https://t.me/imaklain" target="_blank" class="btn-tg">✈️ Telegram</a>
+                        </div>
+                    </li>
+                    <li><strong>Режим работы:</strong> Пн–Пт, 10:00 – 20:00</li>
+                </ul>
+
+                <!-- ====== КАТУШКИ НИТОК ====== -->
+                <div class="thread-spools">
+                    <div class="spool spool-red" title="Красный">
+                        <div class="spool-body"><div class="thread-wrap"></div></div>
+                        <span class="spool-label">Red</span>
+                    </div>
+                    <div class="spool spool-yellow" title="Жёлтый">
+                        <div class="spool-body"><div class="thread-wrap"></div></div>
+                        <span class="spool-label">Gold</span>
+                    </div>
+                    <div class="spool spool-purple" title="Фиолетовый">
+                        <div class="spool-body"><div class="thread-wrap"></div></div>
+                        <span class="spool-label">Purple</span>
+                    </div>
+                    <div class="spool spool-green" title="Изумрудный">
+                        <div class="spool-body"><div class="thread-wrap"></div></div>
+                        <span class="spool-label">Green</span>
+                    </div>
+                    <div class="spool spool-blue" title="Синий">
+                        <div class="spool-body"><div class="thread-wrap"></div></div>
+                        <span class="spool-label">Blue</span>
+                    </div>
+                    <div class="spool spool-pink" title="Розовый">
+                        <div class="spool-body"><div class="thread-wrap"></div></div>
+                        <span class="spool-label">Pink</span>
+                    </div>
+                    <div class="spool spool-gold" title="Золотой">
+                        <div class="spool-body"><div class="thread-wrap"></div></div>
+                        <span class="spool-label">Gold</span>
+                    </div>
+                    <div class="spool spool-terracotta" title="Терракотовый">
+                        <div class="spool-body"><div class="thread-wrap"></div></div>
+                        <span class="spool-label">Terra</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <section class="portfolio" id="portfolio">
+        <h2>Наше портфолио</h2>
+        <div class="portfolio-grid">
+            <div class="portfolio-item">
+                <span class="icon">👕</span>
+                <span class="label">Вышивка на одежде</span>
+                <span class="coming">Скоро добавим</span>
+            </div>
+            <div class="portfolio-item">
+                <span class="icon">🧢</span>
+                <span class="label">Брендирование кепок</span>
+                <span class="coming">Скоро добавим</span>
+            </div>
+            <div class="portfolio-item">
+                <span class="icon">🧥</span>
+                <span class="label">Корпоративные куртки</span>
+                <span class="coming">Скоро добавим</span>
+            </div>
+            <div class="portfolio-item">
+                <span class="icon">🎒</span>
+                <span class="label">Вышивка на рюкзаках</span>
+                <span class="coming">Скоро добавим</span>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 Вышивка Стиль. Все права защищены.</p>
+        <div class="footer-divider"></div>
+        <p style="font-size: 0.85em; opacity: 0.8;">
+            <a href="mailto:imaklain@gmail.com">imaklain@gmail.com</a> · 
+            <a href="tel:+79776975580">+7 (977) 697-55-80</a>
+        </p>
+    </footer>
+
+    <!-- ====== МОДАЛЬНОЕ ОКНО ====== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <button class="modal-close" id="closeModalBtn">&times;</button>
+            <h2>📐 Рассчитать стоимость</h2>
+            <p class="subtitle">Оставьте номер — мы свяжемся с вами и сделаем расчёт</p>
+
+            <form id="calcForm">
+                <label for="phoneInput">📱 Ваш номер телефона</label>
+                <input type="tel" id="phoneInput" placeholder="+7 (___)-___-__-__" required>
+                <button type="submit" class="btn-submit">Отправить заявку</button>
+            </form>
+
+            <div class="success-message" id="successMessage">
+                <div class="check">✅</div>
+                <h3>Заявка отправлена!</h3>
+                <p>Мы свяжемся с вами в ближайшее время</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== ПЛАВАЮЩИЕ КНОПКИ (ТОЛЬКО ОДИН РАЗ) ====== -->
+    <div class="floating-buttons">
+        <a href="https://wa.me/79776975580" target="_blank" class="floating-btn-wa" title="Написать в WhatsApp">💬</a>
+        <a href="https://t.me/imaklain" target="_blank" class="floating-btn-tg" title="Написать в Telegram">✈️</a>
+    </div>
+
+    <!-- ====== СКРИПТЫ ====== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const overlay = document.getElementById('modalOverlay');
+            const openBtn = document.getElementById('openModalBtn');
+            const closeBtn = document.getElementById('closeModalBtn');
+            const form = document.getElementById('calcForm');
+            const phoneInput = document.getElementById('phoneInput');
+            const successMsg = document.getElementById('successMessage');
+
+            if (!overlay || !openBtn || !closeBtn || !form || !phoneInput || !successMsg) {
+                console.error('❌ Ошибка: не найдены элементы модального окна!');
+                return;
+            }
+
+            function openModal() {
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                setTimeout(function() {
+                    phoneInput.focus();
+                }, 200);
+            }
+
+            function closeModal() {
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+                setTimeout(function() {
+                    form.style.display = 'block';
+                    successMsg.style.display = 'none';
+                    form.reset();
+                }, 300);
+            }
+
+            openBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                openModal();
+            });
+
+            closeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                closeModal();
+            });
+
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) {
+                    closeModal();
+                }
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && overlay.classList.contains('active')) {
+                    closeModal();
+                }
+            });
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const phone = phoneInput.value.trim();
+                const digits = phone.replace(/\D/g, '');
+
+                if (digits.length < 10) {
+                    alert('Пожалуйста, введите корректный номер телефона (не менее 10 цифр)');
+                    return;
+                }
+
+                form.style.display = 'none';
+                successMsg.style.display = 'block';
+
+                console.log('📞 Заявка на расчёт! Номер:', phone);
+
+                setTimeout(function() {
+                    closeModal();
+                    setTimeout(function() {
+                        form.style.display = 'block';
+                        successMsg.style.display = 'none';
+                        form.reset();
+                    }, 400);
+                }, 3000);
+            });
+
+            phoneInput.addEventListener('input', function() {
+                let val = this.value.replace(/\D/g, '');
+                if (val.length > 0) {
+                    let formatted = '+7 (';
+                    if (val.length > 1) {
+                        formatted += val.substring(1, 4);
+                        if (val.length >= 4) {
+                            formatted += ') ';
+                            formatted += val.substring(4, 7);
+                            if (val.length >= 7) {
+                                formatted += '-';
+                                formatted += val.substring(7, 9);
+                                if (val.length >= 9) {
+                                    formatted += '-';
+                                    formatted += val.substring(9, 11);
+                                }
+                            }
+                        }
+                    } else {
+                        formatted += val;
+                    }
+                    this.value = formatted;
+                } else {
+                    this.value = '';
+                }
+            });
+
+        });
+    </script>
+
+</body>
+</html>
