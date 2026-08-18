@@ -129,6 +129,7 @@
             background: linear-gradient(135deg, var(--color-primary), var(--color-secondary), var(--color-accent));
             background-size: 200% 200%;
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: gradientMove 4s ease-in-out infinite;
         }
@@ -337,6 +338,7 @@
         .page-title .highlight {
             background: linear-gradient(135deg, var(--color-primary), var(--color-secondary), var(--color-accent));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         .page-subtitle {
@@ -411,6 +413,7 @@
             background: linear-gradient(135deg, var(--color-primary), var(--color-secondary), var(--color-accent));
             background-size: 200% 200%;
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: gradientMove 4s ease-in-out infinite;
         }
@@ -481,6 +484,7 @@
             font-weight: 900;
             background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             display: block;
             line-height: 1.1;
@@ -816,6 +820,7 @@
             font-weight: 900;
             background: linear-gradient(135deg, var(--color-primary), var(--color-secondary), var(--color-accent));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             line-height: 1.1;
         }
@@ -1649,6 +1654,7 @@
             background: linear-gradient(135deg, var(--color-gold), var(--color-accent), var(--color-primary));
             background-size: 200% 200%;
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: gradientMove 3s ease-in-out infinite;
             font-weight: 800;
@@ -2491,38 +2497,36 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================================
     // НАСТРОЙКИ
     // ============================================================
-    const WORKER_URL = 'https://solitary-star-55d0.imaklain.workers.dev';
+    var WORKER_URL = 'https://solitary-star-55d0.imaklain.workers.dev';
 
     // ============================================================
-    // CSRF
+    // CSRF (защита от подделки запросов)
     // ============================================================
     function generateCSRFToken() {
-        const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        var token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         sessionStorage.setItem('csrfToken', token);
         return token;
     }
 
     function addCSRFTokenToForms() {
-        const tokenInputs = document.querySelectorAll('input[name="_csrf"]');
-        const token = generateCSRFToken();
-        tokenInputs.forEach(input => input.value = token);
-    }
-
-    function validateCSRFToken(sentToken) {
-        const storedToken = sessionStorage.getItem('csrfToken');
-        if (!storedToken || sentToken !== storedToken) {
-            console.warn('CSRF-атака предотвращена!');
-            return false;
-        }
-        return true;
+        var tokenInputs = document.querySelectorAll('input[name="_csrf"]');
+        var token = generateCSRFToken();
+        tokenInputs.forEach(function(input) {
+            input.value = token;
+        });
     }
 
     // ============================================================
-    // XSS
+    // ЗАЩИТА ОТ XSS (внедрение вредоносного кода)
     // ============================================================
+    /**
+     * Очистка ввода от HTML-тегов и опасных символов
+     * @param {string} text - текст для очистки
+     * @returns {string} - очищенный текст
+     */
     function sanitizeInput(text) {
         if (!text) return '';
-        let sanitized = text.replace(/<[^>]*>/g, '');
+        var sanitized = text.replace(/<[^>]*>/g, '');
         sanitized = sanitized.replace(/[`*_{}[\]()#+\-.!]/g, '');
         if (sanitized.length > 1000) {
             sanitized = sanitized.substring(0, 1000) + '...';
@@ -2530,24 +2534,29 @@ document.addEventListener('DOMContentLoaded', function() {
         return sanitized;
     }
 
+    /**
+     * Экранирование Markdown-символов для Telegram
+     * @param {string} text - текст для экранирования
+     * @returns {string} - экранированный текст
+     */
     function escapeMarkdown(text) {
         if (!text) return '';
-        const specialChars = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'];
-        let escaped = text;
-        specialChars.forEach(char => {
+        var specialChars = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'];
+        var escaped = text;
+        specialChars.forEach(function(char) {
             escaped = escaped.replace(new RegExp('\\' + char, 'g'), '\\' + char);
         });
         return escaped;
     }
 
     // ============================================================
-    // ЗАЩИТА ОТ СПАМА
+    // ЗАЩИТА ОТ СПАМА (ограничение частоты отправки)
     // ============================================================
-    let lastSubmitTime = 0;
-    const MIN_SUBMIT_INTERVAL = 5000;
+    var lastSubmitTime = 0;
+    var MIN_SUBMIT_INTERVAL = 5000;
 
     function canSubmit() {
-        const now = Date.now();
+        var now = Date.now();
         if (now - lastSubmitTime < MIN_SUBMIT_INTERVAL) {
             alert('Пожалуйста, подождите 5 секунд перед отправкой.');
             return false;
@@ -2557,9 +2566,45 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ============================================================
+    // ВАЛИДАЦИЯ НОМЕРА ТЕЛЕФОНА
+    // ============================================================
+    function validatePhone(phone) {
+        var digits = phone.replace(/\D/g, '');
+        if (digits.length < 10 || digits.length > 12) {
+            return false;
+        }
+        // Проверяем, что номер начинается с 7 или 8
+        if (digits[0] !== '7' && digits[0] !== '8') {
+            return false;
+        }
+        return true;
+    }
+
+    // ============================================================
+    // ВАЛИДАЦИЯ ФАЙЛОВ (изображения, размер, количество)
+    // ============================================================
+    function validateFiles(files) {
+        if (files.length > 5) {
+            alert('Можно загрузить не более 5 фото');
+            return false;
+        }
+        for (var i = 0; i < files.length; i++) {
+            if (!files[i].type.startsWith('image/')) {
+                alert('Можно загружать только изображения');
+                return false;
+            }
+            if (files[i].size > 5 * 1024 * 1024) {
+                alert('Файл "' + files[i].name + '" превышает 5 МБ');
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // ============================================================
     // COOKIE
     // ============================================================
-    const cookieBanner = document.getElementById('cookieBanner');
+    var cookieBanner = document.getElementById('cookieBanner');
     if (localStorage.getItem('cookiesAccepted') === null && localStorage.getItem('cookiesRejected') === null) {
         cookieBanner.classList.add('active');
     }
@@ -2577,8 +2622,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================================
     // НАВИГАЦИЯ
     // ============================================================
-    const navLinks = document.querySelectorAll('.nav-link');
-    const pages = {
+    var navLinks = document.querySelectorAll('.nav-link');
+    var pages = {
         home: document.getElementById('page-home'),
         services: document.getElementById('page-services'),
         process: document.getElementById('page-process'),
@@ -2592,21 +2637,21 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     window.navigateTo = function(pageId) {
-        Object.values(pages).forEach(p => {
-            if (p) p.classList.remove('active');
-        });
+        for (var key in pages) {
+            if (pages[key]) pages[key].classList.remove('active');
+        }
         if (pages[pageId]) pages[pageId].classList.add('active');
-        navLinks.forEach(link => {
+        navLinks.forEach(function(link) {
             link.classList.toggle('active', link.dataset.page === pageId);
         });
         window.scrollTo({ top: 0, behavior: 'smooth' });
         document.getElementById('navList').classList.remove('open');
     };
 
-    navLinks.forEach(link => {
+    navLinks.forEach(function(link) {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            const pageId = this.dataset.page;
+            var pageId = this.dataset.page;
             if (pageId) navigateTo(pageId);
         });
     });
@@ -2621,7 +2666,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================================
     // ШАПКА ПРИ СКРОЛЛЕ
     // ============================================================
-    const header = document.getElementById('header');
+    var header = document.getElementById('header');
     window.addEventListener('scroll', function() {
         header.classList.toggle('scrolled', window.scrollY > 50);
     });
@@ -2629,7 +2674,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================================
     // КНОПКА НАВЕРХ
     // ============================================================
-    const scrollBtn = document.getElementById('scrollTopBtn');
+    var scrollBtn = document.getElementById('scrollTopBtn');
     window.addEventListener('scroll', function() {
         scrollBtn.classList.toggle('visible', window.scrollY > 400);
     });
@@ -2637,28 +2682,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================================
     // АНИМАЦИЯ ПРИ СКРОЛЛЕ
     // ============================================================
-    const animateElements = document.querySelectorAll('.animate-on-scroll');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+    var animateElements = document.querySelectorAll('.animate-on-scroll');
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
             }
         });
     }, { threshold: 0.08 });
 
-    animateElements.forEach(el => observer.observe(el));
+    animateElements.forEach(function(el) { observer.observe(el); });
 
     // ============================================================
     // СЧЁТЧИК
     // ============================================================
-    const counters = document.querySelectorAll('.stat-number');
-    const counterObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+    var counters = document.querySelectorAll('.stat-number');
+    var counterObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
             if (entry.isIntersecting) {
-                const target = parseInt(entry.target.dataset.count);
-                let current = 0;
-                const increment = Math.ceil(target / 50);
-                const timer = setInterval(() => {
+                var target = parseInt(entry.target.dataset.count);
+                var current = 0;
+                var increment = Math.ceil(target / 50);
+                var timer = setInterval(function() {
                     current += increment;
                     if (current >= target) {
                         current = target;
@@ -2671,7 +2716,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, { threshold: 0.5 });
 
-    counters.forEach(el => counterObserver.observe(el));
+    counters.forEach(function(el) { counterObserver.observe(el); });
 
     // ============================================================
     // МОДАЛЬНЫЕ ОКНА
@@ -2689,13 +2734,18 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // ============================================================
-    // ОТПРАВКА В TELEGRAM
+    // ОТПРАВКА В TELEGRAM (с защитой)
     // ============================================================
+    /**
+     * Отправляет сообщение в Telegram через Cloudflare Worker
+     * @param {string} text - текст сообщения
+     * @returns {void}
+     */
     function sendToTelegram(text) {
         if (!canSubmit()) return;
 
-        const btns = document.querySelectorAll('button[type="submit"]');
-        btns.forEach(btn => {
+        var btns = document.querySelectorAll('button[type="submit"]');
+        btns.forEach(function(btn) {
             btn.disabled = true;
             btn.textContent = '⏳ Отправка...';
         });
@@ -2705,8 +2755,8 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: text })
         })
-        .then(response => response.json())
-        .then(data => {
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
             if (data.success) {
                 console.log('✅ Сообщение отправлено через Worker');
             } else {
@@ -2714,12 +2764,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('⚠️ Ошибка отправки. Попробуйте позже.');
             }
         })
-        .catch(error => {
+        .catch(function(error) {
             console.error('❌ Ошибка соединения:', error);
             alert('⚠️ Ошибка соединения. Проверьте интернет.');
         })
-        .finally(() => {
-            btns.forEach(btn => {
+        .finally(function() {
+            btns.forEach(function(btn) {
                 btn.disabled = false;
                 btn.textContent = '🚀 Отправить заявку';
             });
@@ -2727,18 +2777,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ============================================================
-    // ФОРМА ЗАЯВКИ
+    // ФОРМА ЗАЯВКИ (с полной валидацией)
     // ============================================================
-    const orderForm = document.getElementById('orderForm');
-    const orderPhone = document.getElementById('orderPhone');
-    const orderSuccess = document.getElementById('orderSuccess');
+    var orderForm = document.getElementById('orderForm');
+    var orderPhone = document.getElementById('orderPhone');
+    var orderSuccess = document.getElementById('orderSuccess');
 
     addCSRFTokenToForms();
 
+    // Автоматическое форматирование телефона
     orderPhone.addEventListener('input', function() {
-        let val = this.value.replace(/\D/g, '');
+        var val = this.value.replace(/\D/g, '');
         if (val.length > 0) {
-            let f = '+7 (';
+            var f = '+7 (';
             if (val.length > 1) {
                 f += val.substring(1, 4);
                 if (val.length >= 4) { f += ') ';
@@ -2754,47 +2805,63 @@ document.addEventListener('DOMContentLoaded', function() {
 
     orderForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        
+
+        // Проверка CSRF
+        var csrfToken = document.getElementById('orderCsrf').value;
+        var storedToken = sessionStorage.getItem('csrfToken');
+        if (!storedToken || csrfToken !== storedToken) {
+            alert('⚠️ Ошибка безопасности. Обновите страницу.');
+            return;
+        }
+
+        // Проверка согласия на обработку ПД
         if (!document.getElementById('orderConsent').checked) {
             alert('⚠️ Необходимо дать согласие на обработку персональных данных.');
             return;
         }
-        
-        const phone = orderPhone.value.trim();
-        if (phone.replace(/\D/g, '').length < 10) {
-            alert('Введите корректный номер телефона');
+
+        // Валидация телефона
+        var phone = orderPhone.value.trim();
+        if (!validatePhone(phone)) {
+            alert('⚠️ Введите корректный номер телефона (от 10 до 12 цифр, начинается с 7 или 8).');
             return;
         }
-        const message = sanitizeInput(document.getElementById('orderMessage').value.trim());
-        const type = sanitizeInput(document.getElementById('orderType').value);
 
+        // Санитизация сообщения
+        var message = sanitizeInput(document.getElementById('orderMessage').value.trim());
         if (!message) {
             alert('⚠️ Опишите, что нужно сделать.');
             return;
         }
 
-        let wheelResultText = '❌ Не крутил барабан';
+        // Санитизация типа услуги
+        var type = sanitizeInput(document.getElementById('orderType').value);
+
+        // Результат барабана
+        var wheelResultText = '❌ Не крутил барабан';
         if (window.lastWheelResult) {
             wheelResultText = window.lastWheelResult;
             if (window.lastWheelPrize && window.lastWheelPrize.value > 0) {
-                wheelResultText = `✅ ВЫИГРЫШ: ${window.lastWheelPrize.value}% скидка`;
+                wheelResultText = '✅ ВЫИГРЫШ: ' + window.lastWheelPrize.value + '% скидка';
             }
         }
 
-        const text = 
-            `📩 *НОВАЯ ЗАЯВКА НА УСЛУГУ!*\n\n` +
-            `📱 *Телефон:* ${escapeMarkdown(phone)}\n` +
-            `📂 *Тип услуги:* ${escapeMarkdown(type)}\n` +
-            `💬 *Описание:* ${escapeMarkdown(message)}\n` +
-            `🎰 *Результат барабана:* ${escapeMarkdown(wheelResultText)}\n` +
-            `📋 *Согласие на ПД:* ✅ Да\n` +
-            `🕐 *Время:* ${new Date().toLocaleString('ru-RU')}`;
+        // Формирование сообщения
+        var text =
+            '📩 *НОВАЯ ЗАЯВКА НА УСЛУГУ!*\n\n' +
+            '📱 *Телефон:* ' + escapeMarkdown(phone) + '\n' +
+            '📂 *Тип услуги:* ' + escapeMarkdown(type) + '\n' +
+            '💬 *Описание:* ' + escapeMarkdown(message) + '\n' +
+            '🎰 *Результат барабана:* ' + escapeMarkdown(wheelResultText) + '\n' +
+            '📋 *Согласие на ПД:* ✅ Да\n' +
+            '🕐 *Время:* ' + new Date().toLocaleString('ru-RU');
 
         sendToTelegram(text);
 
+        // Показываем успех
         orderForm.style.display = 'none';
         orderSuccess.style.display = 'block';
-        setTimeout(() => {
+        setTimeout(function() {
             orderForm.style.display = 'block';
             orderSuccess.style.display = 'none';
             orderForm.reset();
@@ -2806,14 +2873,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================================
     // БЛОГ
     // ============================================================
+    /**
+     * Открывает статью блога
+     * @param {string} articleId - ID статьи
+     */
     window.openBlogArticle = function(articleId) {
-        document.querySelectorAll('.blog-full-article').forEach(el => {
+        document.querySelectorAll('.blog-full-article').forEach(function(el) {
             el.classList.remove('active');
         });
-        const target = document.getElementById(articleId);
+        var target = document.getElementById(articleId);
         if (target) {
             target.classList.add('active');
-            setTimeout(() => {
+            setTimeout(function() {
                 target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 150);
         }
@@ -2822,16 +2893,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================================
     // БАРАБАН
     // ============================================================
-    const wheelOverlay = document.getElementById('wheelOverlay');
-    const wheelSpin = document.getElementById('wheelSpin');
-    const wheelResult = document.getElementById('wheelResult');
-    const wheelBtn = document.getElementById('wheelBtn');
-    let isSpinning = false;
-    let wheelAttempts = 0;
-    const MAX_ATTEMPTS = 1;
-    let wheelHistory = [];
+    var wheelOverlay = document.getElementById('wheelOverlay');
+    var wheelSpin = document.getElementById('wheelSpin');
+    var wheelResult = document.getElementById('wheelResult');
+    var wheelBtn = document.getElementById('wheelBtn');
+    var isSpinning = false;
+    var wheelAttempts = 0;
+    var MAX_ATTEMPTS = 1;
+    var wheelHistory = [];
 
-    const segments = [
+    var segments = [
         { label: '22%', color: '#F59E0B', value: 22 },
         { label: '15%', color: '#8B5CF6', value: 15 },
         { label: '10%', color: '#F59E0B', value: 10 },
@@ -2843,15 +2914,15 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
 
     function buildWheel() {
-        const total = segments.length;
-        const angle = 360 / total;
+        var total = segments.length;
+        var angle = 360 / total;
         wheelSpin.innerHTML = '<div class="center"></div>';
-        segments.forEach((seg, i) => {
-            const rotation = i * angle;
-            const label = document.createElement('div');
+        segments.forEach(function(seg, i) {
+            var rotation = i * angle;
+            var label = document.createElement('div');
             label.className = 'segment-label';
             label.textContent = seg.label;
-            label.style.transform = `rotate(${rotation + angle/2}deg) translateY(-75px)`;
+            label.style.transform = 'rotate(' + (rotation + angle/2) + 'deg) translateY(-75px)';
             label.style.left = '50%';
             label.style.top = '50%';
             label.style.transformOrigin = '0 0';
@@ -2862,19 +2933,20 @@ document.addEventListener('DOMContentLoaded', function() {
             label.style.textShadow = '0 1px 6px rgba(0,0,0,0.4)';
             wheelSpin.appendChild(label);
         });
-        wheelSpin.style.background = `conic-gradient(${segments.map((s, i) => {
-            const start = i * angle;
-            const end = start + angle;
-            return `${s.color} ${start}deg ${end}deg`;
-        }).join(', ')})`;
+        var gradientParts = segments.map(function(s, i) {
+            var start = i * angle;
+            var end = start + angle;
+            return s.color + ' ' + start + 'deg ' + end + 'deg';
+        });
+        wheelSpin.style.background = 'conic-gradient(' + gradientParts.join(', ') + ')';
     }
     buildWheel();
 
     function updateWheelUI() {
-        const remaining = MAX_ATTEMPTS - wheelAttempts;
-        const attemptsEl = document.getElementById('wheelAttempts');
+        var remaining = MAX_ATTEMPTS - wheelAttempts;
+        var attemptsEl = document.getElementById('wheelAttempts');
         if (attemptsEl) {
-            attemptsEl.innerHTML = `🎯 У вас <span class="remaining">${remaining}</span> попытка ${remaining === 0 ? ' 🔒 Попытка использована' : ''}`;
+            attemptsEl.innerHTML = '🎯 У вас <span class="remaining">' + remaining + '</span> попытка ' + (remaining === 0 ? ' 🔒 Попытка использована' : '');
         }
         if (remaining === 0) {
             wheelBtn.disabled = true;
@@ -2889,24 +2961,30 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    /**
+     * Добавляет запись в историю
+     * @param {Object} prize - объект с призом
+     */
     function addHistory(prize) {
         wheelHistory.push({ date: new Date().toLocaleString('ru-RU'), prize: prize });
         renderHistory();
     }
 
     function renderHistory() {
-        const historyEl = document.getElementById('wheelHistory');
+        var historyEl = document.getElementById('wheelHistory');
         if (!historyEl) return;
         if (wheelHistory.length === 0) {
             historyEl.innerHTML = '<div style="color:var(--color-text-secondary);font-size:0.8rem;text-align:center;">История розыгрышей пуста</div>';
             return;
         }
-        historyEl.innerHTML = wheelHistory.map(item => {
-            const isWin = item.prize.value > 0;
-            let label = item.prize.label;
+        var html = '';
+        wheelHistory.forEach(function(item) {
+            var isWin = item.prize.value > 0;
+            var label = item.prize.label;
             if (item.prize.value > 0) label = item.prize.value + '% скидка';
-            return `<div class="history-item"><span>${item.date}</span><span class="${isWin ? 'win' : 'lose'}">${isWin ? '🎉 ' + label : '😊 ' + label}</span></div>`;
-        }).join('');
+            html += '<div class="history-item"><span>' + item.date + '</span><span class="' + (isWin ? 'win' : 'lose') + '">' + (isWin ? '🎉 ' + label : '😊 ' + label) + '</span></div>';
+        });
+        historyEl.innerHTML = html;
     }
 
     window.openWheel = function() {
@@ -2938,22 +3016,22 @@ document.addEventListener('DOMContentLoaded', function() {
         wheelBtn.textContent = '🔄 Крутится...';
         wheelResult.textContent = '🌀 ...';
 
-        const randomIndex = Math.floor(Math.random() * segments.length);
-        const totalRotation = 360 * 5 + randomIndex * (360 / segments.length) + Math.random() * 30;
+        var randomIndex = Math.floor(Math.random() * segments.length);
+        var totalRotation = 360 * 5 + randomIndex * (360 / segments.length) + Math.random() * 30;
 
-        wheelSpin.style.transform = `rotate(${totalRotation}deg)`;
+        wheelSpin.style.transform = 'rotate(' + totalRotation + 'deg)';
 
-        setTimeout(() => {
-            const prize = segments[randomIndex];
-            let resultText = '';
-            let winType = '';
+        setTimeout(function() {
+            var prize = segments[randomIndex];
+            var resultText = '';
+            var winType = '';
 
             wheelAttempts++;
             addHistory(prize);
 
             if (prize.value > 0) {
-                resultText = `🎉 Вы выиграли ${prize.value}% скидку!`;
-                winType = `✅ ВЫИГРЫШ: ${prize.value}% скидка`;
+                resultText = '🎉 Вы выиграли ' + prize.value + '% скидку!';
+                winType = '✅ ВЫИГРЫШ: ' + prize.value + '% скидка';
                 launchConfetti();
             } else {
                 resultText = '😊 Повезёт в другой раз!';
@@ -2970,7 +3048,7 @@ document.addEventListener('DOMContentLoaded', function() {
             updateWheelUI();
 
             if (wheelAttempts >= MAX_ATTEMPTS) {
-                setTimeout(() => {
+                setTimeout(function() {
                     wheelResult.textContent = '🔒 Попытка использована! Спасибо за игру!';
                     wheelBtn.textContent = '🔒 Попытка использована';
                     wheelBtn.disabled = true;
@@ -2982,13 +3060,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // ============================================================
-    // КОНФЕТТИ
+    // КОНФЕТТИ (с защитой от ошибки removeChild)
     // ============================================================
     function launchConfetti() {
-        const container = document.getElementById('confettiContainer');
-        const colors = ['#F59E0B', '#8B5CF6', '#EC4899', '#6D28D9', '#34C759', '#FF6B6B', '#FECA57', '#6A0DAD'];
-        for (let i = 0; i < 80; i++) {
-            const c = document.createElement('div');
+        var container = document.getElementById('confettiContainer');
+        var colors = ['#F59E0B', '#8B5CF6', '#EC4899', '#6D28D9', '#34C759', '#FF6B6B', '#FECA57', '#6A0DAD'];
+        for (var i = 0; i < 80; i++) {
+            var c = document.createElement('div');
             c.className = 'confetti';
             c.style.left = Math.random() * 100 + '%';
             c.style.background = colors[Math.floor(Math.random() * colors.length)];
@@ -2998,7 +3076,13 @@ document.addEventListener('DOMContentLoaded', function() {
             c.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
             c.style.animationDelay = (Math.random() * 0.5) + 's';
             container.appendChild(c);
-            setTimeout(() => c.remove(), 4000);
+            (function(el) {
+                setTimeout(function() {
+                    if (el.parentNode) {
+                        el.parentNode.removeChild(el);
+                    }
+                }, 4000);
+            })(c);
         }
     }
 
@@ -3006,11 +3090,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // КАЛЬКУЛЯТОР
     // ============================================================
     function calculatePrice() {
-        const product = document.getElementById('calcProduct').value;
-        const qty = parseInt(document.getElementById('calcQuantity').value);
-        const compl = document.getElementById('calcComplexity').value;
+        var product = document.getElementById('calcProduct').value;
+        var qty = parseInt(document.getElementById('calcQuantity').value);
+        var compl = document.getElementById('calcComplexity').value;
 
-        let basePrice = 500;
+        var basePrice = 500;
         switch (product) {
             case 'Футболка': basePrice = 500; break;
             case 'Худи / Свитшот': basePrice = 700; break;
@@ -3020,24 +3104,24 @@ document.addEventListener('DOMContentLoaded', function() {
             default: basePrice = 600;
         }
 
-        let complexityMultiplier = 1;
-        let complexityLabel = 'Средняя';
+        var complexityMultiplier = 1;
+        var complexityLabel = 'Средняя';
         switch (compl) {
             case 'simple': complexityMultiplier = 0.7; complexityLabel = 'Простая'; break;
             case 'medium': complexityMultiplier = 1; complexityLabel = 'Средняя'; break;
             case 'complex': complexityMultiplier = 1.6; complexityLabel = 'Сложная'; break;
         }
 
-        let discount = 1;
+        var discount = 1;
         if (qty >= 5) discount = 0.9;
         if (qty >= 10) discount = 0.8;
         if (qty >= 20) discount = 0.7;
         if (qty >= 50) discount = 0.6;
         if (qty >= 100) discount = 0.5;
 
-        const programCost = 1000;
-        let pricePerItem = basePrice * complexityMultiplier * discount;
-        let total = qty === 1 ? pricePerItem + programCost : pricePerItem * qty + programCost;
+        var programCost = 1000;
+        var pricePerItem = basePrice * complexityMultiplier * discount;
+        var total = qty === 1 ? pricePerItem + programCost : pricePerItem * qty + programCost;
         total = Math.round(total / 100) * 100;
 
         document.getElementById('calcResultPrice').textContent = total.toLocaleString('ru-RU') + ' ₽';
@@ -3057,9 +3141,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================================
     // ЛАЙТБОКС
     // ============================================================
+    /**
+     * Открывает лайтбокс с изображением
+     * @param {string} src - URL изображения
+     */
     window.openLightbox = function(src) {
-        const lb = document.getElementById('lightbox');
-        const img = document.getElementById('lightboxImage');
+        var lb = document.getElementById('lightbox');
+        var img = document.getElementById('lightboxImage');
         if (lb && img) {
             img.src = src;
             lb.classList.add('active');
@@ -3067,7 +3155,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     window.closeLightbox = function() {
-        const lb = document.getElementById('lightbox');
+        var lb = document.getElementById('lightbox');
         if (lb) {
             lb.classList.remove('active');
             document.body.style.overflow = '';
@@ -3084,7 +3172,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================================
     // ПОРТФОЛИО
     // ============================================================
-    const hatImages = [
+    var hatImages = [
         'https://imaklain-pixel.github.io/my-vishivka-sit/WhatsApp%20Image%202024-11-12%20at%2012.10.11%20(1).jpeg',
         'https://imaklain-pixel.github.io/my-vishivka-sit/WhatsApp%20Image%202024-11-12%20at%2012.10.11.jpeg',
         'https://imaklain-pixel.github.io/my-vishivka-sit/fancywork008-07082026-0001.jpeg',
@@ -3119,15 +3207,15 @@ document.addEventListener('DOMContentLoaded', function() {
         'https://imaklain-pixel.github.io/my-vishivka-sit/fancywork008-07082026-0128.jpeg',
         'https://imaklain-pixel.github.io/my-vishivka-sit/fancywork008-07082026-0130.jpeg'
     ];
-    const hg = document.getElementById('gallery-hats');
-    hatImages.forEach(src => {
-        const el = document.createElement('div');
+    var hg = document.getElementById('gallery-hats');
+    hatImages.forEach(function(src) {
+        var el = document.createElement('div');
         el.className = 'gallery-item';
-        el.innerHTML = `<img src="${src}" alt="Кепка" onclick="openLightbox('${src}')"><div class="caption">Кепка с вышивкой</div>`;
+        el.innerHTML = '<img src="' + src + '" alt="Кепка" onclick="openLightbox(\'' + src + '\')"><div class="caption">Кепка с вышивкой</div>';
         hg.appendChild(el);
     });
 
-    const patchImages = [
+    var patchImages = [
         'https://imaklain-pixel.github.io/my-vishivka-sit/fancywork008-07082026-0131.jpeg',
         'https://imaklain-pixel.github.io/my-vishivka-sit/fancywork008-07082026-0127.jpeg',
         'https://imaklain-pixel.github.io/my-vishivka-sit/fancywork008-07082026-0111.jpeg',
@@ -3161,15 +3249,15 @@ document.addEventListener('DOMContentLoaded', function() {
         'https://imaklain-pixel.github.io/my-vishivka-sit/70da5507-fc93-4a47-9572-5a95024f5576.jpg',
         'https://imaklain-pixel.github.io/my-vishivka-sit/00882fc1-9a8e-42fd-a657-48974bfbf71c%20(1).jpg'
     ];
-    const pg = document.getElementById('gallery-patches');
-    patchImages.forEach(src => {
-        const el = document.createElement('div');
+    var pg = document.getElementById('gallery-patches');
+    patchImages.forEach(function(src) {
+        var el = document.createElement('div');
         el.className = 'gallery-item';
-        el.innerHTML = `<img src="${src}" alt="Нашивка" onclick="openLightbox('${src}')"><div class="caption">Нашивка / шеврон</div>`;
+        el.innerHTML = '<img src="' + src + '" alt="Нашивка" onclick="openLightbox(\'' + src + '\')"><div class="caption">Нашивка / шеврон</div>';
         pg.appendChild(el);
     });
 
-    const clothImages = [
+    var clothImages = [
         'https://imaklain-pixel.github.io/my-vishivka-sit/fancywork008-07082026-0134.jpeg',
         'https://imaklain-pixel.github.io/my-vishivka-sit/fancywork008-07082026-0133.jpeg',
         'https://imaklain-pixel.github.io/my-vishivka-sit/fancywork008-07082026-0132.jpeg',
@@ -3236,39 +3324,43 @@ document.addEventListener('DOMContentLoaded', function() {
         'https://imaklain-pixel.github.io/my-vishivka-sit/IMG_20250928_125525389.jpg',
         'https://imaklain-pixel.github.io/my-vishivka-sit/IMG_20250908_181348753.jpg'
     ];
-    const cg = document.getElementById('gallery-clothing');
-    clothImages.forEach(src => {
-        const el = document.createElement('div');
+    var cg = document.getElementById('gallery-clothing');
+    clothImages.forEach(function(src) {
+        var el = document.createElement('div');
         el.className = 'gallery-item';
-        el.innerHTML = `<img src="${src}" alt="Бренд на одежде" onclick="openLightbox('${src}')"><div class="caption">Вышивка на одежде</div>`;
+        el.innerHTML = '<img src="' + src + '" alt="Бренд на одежде" onclick="openLightbox(\'' + src + '\')"><div class="caption">Вышивка на одежде</div>';
         cg.appendChild(el);
     });
 
+    /**
+     * Открывает категорию портфолио
+     * @param {string} category - название категории (hats, patches, clothing)
+     */
     window.openCategory = function(category) {
-        document.querySelectorAll('.gallery-grid').forEach(el => el.classList.remove('active'));
-        const target = document.getElementById('gallery-' + category);
+        document.querySelectorAll('.gallery-grid').forEach(function(el) { el.classList.remove('active'); });
+        var target = document.getElementById('gallery-' + category);
         if (target) {
             target.classList.add('active');
-            setTimeout(() => {
+            setTimeout(function() {
                 target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 150);
         }
     };
 
     // ============================================================
-    // ФОРМА ОТЗЫВОВ
+    // ФОРМА ОТЗЫВОВ (с полной валидацией)
     // ============================================================
-    const reviewForm = document.getElementById('reviewForm');
-    const reviewSuccess = document.getElementById('reviewSuccess');
-    const fileInput = document.getElementById('reviewPhoto');
-    const filePreview = document.getElementById('filePreview');
-    const reviewText = document.getElementById('reviewText');
-    const reviewCounter = document.getElementById('reviewCounter');
+    var reviewForm = document.getElementById('reviewForm');
+    var reviewSuccess = document.getElementById('reviewSuccess');
+    var fileInput = document.getElementById('reviewPhoto');
+    var filePreview = document.getElementById('filePreview');
+    var reviewText = document.getElementById('reviewText');
+    var reviewCounter = document.getElementById('reviewCounter');
 
     if (reviewText && reviewCounter) {
         reviewText.addEventListener('input', function() {
-            const len = this.value.length;
-            reviewCounter.textContent = `${len} / 1000`;
+            var len = this.value.length;
+            reviewCounter.textContent = len + ' / 1000';
             if (len > 900) {
                 reviewCounter.style.color = '#EC4899';
             } else {
@@ -3278,81 +3370,73 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (fileInput) {
-        fileInput.addEventListener('change', function(e) {
+        fileInput.addEventListener('change', function() {
             filePreview.innerHTML = '';
-            const files = Array.from(this.files);
-            if (files.length > 5) {
-                alert('Можно загрузить не более 5 фото');
+            var files = Array.from(this.files);
+            
+            // Валидация файлов
+            if (!validateFiles(files)) {
                 this.value = '';
                 return;
             }
-            let hasError = false;
-            files.forEach(file => {
-                if (!file.type.startsWith('image/')) {
-                    alert('Можно загружать только изображения');
-                    this.value = '';
-                    hasError = true;
-                    return;
-                }
-                if (file.size > 5 * 1024 * 1024) {
-                    alert(`Файл "${file.name}" превышает 5 МБ`);
-                    this.value = '';
-                    hasError = true;
-                    return;
-                }
-                if (!hasError) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        filePreview.appendChild(img);
-                    };
-                    reader.readAsDataURL(file);
-                }
+
+            files.forEach(function(file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.createElement('img');
+                    img.src = e.target.result;
+                    filePreview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
             });
-            if (hasError) {
-                filePreview.innerHTML = '';
-                this.value = '';
-            }
         });
     }
 
     if (reviewForm) {
         reviewForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
+            // Проверка CSRF
+            var csrfToken = document.getElementById('reviewCsrf').value;
+            var storedToken = sessionStorage.getItem('csrfToken');
+            if (!storedToken || csrfToken !== storedToken) {
+                alert('⚠️ Ошибка безопасности. Обновите страницу.');
+                return;
+            }
+
+            // Проверка согласия
             if (!document.getElementById('reviewConsent').checked) {
                 alert('⚠️ Для отправки отзыва необходимо дать согласие на обработку персональных данных.');
                 return;
             }
-            
-            const name = sanitizeInput(document.getElementById('reviewName').value.trim());
-            const rating = document.getElementById('reviewRating').value;
-            const text = sanitizeInput(document.getElementById('reviewText').value.trim());
-            
+
+            var name = sanitizeInput(document.getElementById('reviewName').value.trim());
+            var rating = document.getElementById('reviewRating').value;
+            var text = sanitizeInput(document.getElementById('reviewText').value.trim());
+
             if (!name || !text) {
                 alert('Заполните имя и текст отзыва');
                 return;
             }
-            
-            const stars = '⭐'.repeat(parseInt(rating)) + '☆'.repeat(5 - parseInt(rating));
-            const files = fileInput.files;
-            const photoCount = files.length;
-            
-            const msg = 
-                `⭐ *НОВЫЙ ОТЗЫВ (МОДЕРАЦИЯ)!*\n\n` +
-                `👤 *Имя:* ${escapeMarkdown(name)}\n` +
-                `📊 *Оценка:* ${escapeMarkdown(stars)}\n` +
-                `💬 *Отзыв:* ${escapeMarkdown(text)}\n` +
-                `📸 *Фото:* ${photoCount > 0 ? photoCount + ' шт' : 'нет'}\n` +
-                `📋 *Согласие на ПД:* ✅ Да\n` +
-                `🕐 *Время:* ${new Date().toLocaleString('ru-RU')}`;
-            
+
+            var stars = '⭐'.repeat(parseInt(rating)) + '☆'.repeat(5 - parseInt(rating));
+            var files = fileInput.files;
+            var photoCount = files.length;
+
+            var msg =
+                '⭐ *НОВЫЙ ОТЗЫВ (МОДЕРАЦИЯ)!*\n\n' +
+                '👤 *Имя:* ' + escapeMarkdown(name) + '\n' +
+                '📊 *Оценка:* ' + escapeMarkdown(stars) + '\n' +
+                '💬 *Отзыв:* ' + escapeMarkdown(text) + '\n' +
+                '📸 *Фото:* ' + (photoCount > 0 ? photoCount + ' шт' : 'нет') + '\n' +
+                '📋 *Согласие на ПД:* ✅ Да\n' +
+                '🕐 *Время:* ' + new Date().toLocaleString('ru-RU');
+
             sendToTelegram(msg);
-            
+
             reviewForm.style.display = 'none';
             reviewSuccess.style.display = 'block';
-            setTimeout(() => {
+            setTimeout(function() {
                 reviewForm.style.display = 'block';
                 reviewSuccess.style.display = 'none';
                 reviewForm.reset();
@@ -3369,6 +3453,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateWheelUI();
 
     console.log('✅ Сайт загружен! Worker URL:', WORKER_URL);
+    console.log('🛡️ Защита активирована: CSRF, XSS, валидация телефона, анти-спам');
 
 });
 </script>
