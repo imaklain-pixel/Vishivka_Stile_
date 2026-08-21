@@ -2321,16 +2321,16 @@
     <!-- ===== КОНТАКТЫ ===== -->
     <div class="page" id="page-contacts">
         <div class="container">
-            <h1 class="page-title">📞 <span class="highlight">Контакты</span></h1>
+            <h1 class="page-title">Контакты</h1>
             <p class="page-subtitle">Свяжитесь со мной любым удобным способом — отвечу в течение 15 минут</p>
             <div class="contacts-grid">
                 <div>
                     <ul class="contacts-list">
-                        <li><strong>📱 Телефон</strong> <a href="tel:+79014030785">+7 (901) 403-07-85</a></li>
-                        <li><strong>✉️ Email</strong> <a href="mailto:vishivkavs@gmail.com">vishivkavs@gmail.com</a></li>
-                        <li><strong>🕐 Режим работы</strong> Пн–Пт, 9:00 – 18:00</li>
-                        <li><strong>📍 Адрес</strong> Москва, ул. Исаковского, д. 20</li>
-                        <li style="border-bottom: none;"><strong>💬 Связаться со мной</strong>
+                        <li><strong>Телефон</strong> <a href="tel:+79014030785">+7 (901) 403-07-85</a></li>
+                        <li><strong>Email</strong> <a href="mailto:vishivkavs@gmail.com">vishivkavs@gmail.com</a></li>
+                        <li><strong>Режим работы</strong> Пн–Пт, 9:00 – 18:00</li>
+                        <li><strong>Адрес</strong> Москва, ул. Исаковского, д. 20</li>
+                        <li style="border-bottom: none;"><strong>Связаться со мной</strong>
                             <div class="messenger-links">
                                 <a href="https://wa.me/79014030785" target="_blank" class="btn-wa">WhatsApp</a>
                                 <a href="https://t.me/+79014030785" target="_blank" class="btn-tg">Telegram</a>
@@ -2340,7 +2340,7 @@
                             </div>
                         </li>
                     </ul>
-                    <button class="btn btn-gold" onclick="openModal('order')" style="max-width:100%; margin-top:var(--space-md);">🔥 Оставить заявку</button>
+                    <button class="btn btn-gold" onclick="openModal('order')" style="max-width:100%; margin-top:var(--space-md);">Оставить заявку</button>
                 </div>
                 <div>
                     <div class="map-container">
@@ -2355,7 +2355,7 @@
     <!-- ===== ЮРИДИЧЕСКАЯ ===== -->
     <div class="page" id="page-legal">
         <div class="container">
-            <h1 class="page-title">📄 <span class="highlight">Юридическая информация</span></h1>
+            <h1 class="page-title">Юридическая информация</h1>
             <p class="page-subtitle">Всё по закону — работаю официально как самозанятый с чеками</p>
             <div style="background: linear-gradient(135deg, rgba(52,199,89,0.06), rgba(139,92,246,0.06)); border-radius: var(--radius-lg); padding: var(--space-xl); margin-bottom: var(--space-xl); border: 1px solid rgba(52,199,89,0.1);">
                 <div style="display:flex; align-items:center; gap:var(--space-md); flex-wrap:wrap;">
@@ -2469,15 +2469,31 @@
 <!-- БАРАБАН -->
 <div class="wheel-overlay" id="wheelOverlay">
     <div class="wheel-content">
-        <button class="modal-close" onclick="closeWheel()" style="position:absolute;top:12px;right:16px;font-size:1.6rem;color:var(--color-text-secondary);background:none;border:none;cursor:pointer;">✕</button>
-        <h2>🎰 Крути барабан!</h2>
-        <p>Выиграй скидку или бонус к заказу <span class="live-emoji">🔥</span></p>
-        <div class="wheel-attempts" id="wheelAttempts">🎯 У вас <span class="remaining">1</span> попытка</div>
+        <!-- Крестик закрытия сверху -->
+        <button class="modal-close" onclick="closeWheel()" style="position:absolute;top:12px;right:16px;font-size:1.6rem;color:var(--color-text-secondary);background:none;border:none;cursor:pointer;z-index:10;">✕</button>
+        
+        <h2 style="margin-top: 8px; font-size: 1.3rem;">🎰 Крути барабан!</h2>
+        <p style="font-size: 0.9rem; margin-bottom: 8px;">Выиграй скидку или бонус к заказу <span class="live-emoji">🔥</span></p>
+        
+        <!-- Блок с попытками (JS будет менять текст внутри) -->
+        <div class="wheel-attempts" id="wheelAttempts" style="margin-bottom: 12px; font-size: 0.9rem;">🎯 У вас <span class="remaining">1</span> попытка</div>
+        
+        <!-- Сам барабан (остается в том же размере) -->
         <div class="wheel-spin" id="wheelSpin"><div class="center"></div></div>
-        <div class="wheel-result" id="wheelResult">Нажми кнопку, чтобы крутить</div>
+        
+        <!-- Текст результата -->
+        <div class="wheel-result" id="wheelResult" style="min-height: 40px; margin: 12px 0 10px;">Нажми кнопку, чтобы крутить</div>
+        
+        <!-- Кнопка крутить -->
         <button class="btn-wheel" id="wheelBtn">🌀 Крутить!</button>
-        <div class="wheel-history" id="wheelHistory"><div style="color:var(--color-text-secondary);font-size:0.8rem;text-align:center;">История розыгрышей пуста</div></div>
-        <button class="btn-wheel" style="background:transparent;color:var(--color-text-secondary);box-shadow:none;margin-top:var(--space-sm);" onclick="closeWheel()">✕ Закрыть</button>
+        
+        <!-- История (компактная) -->
+        <div class="wheel-history" id="wheelHistory" style="margin-top: 12px; max-height: 80px;">
+            <div style="color:var(--color-text-secondary);font-size:0.75rem;text-align:center;">История розыгрышей пуста</div>
+        </div>
+        
+        <!-- Кнопка "Закрыть" внизу (сделана минималистичной) -->
+        <button class="btn-wheel" style="background:transparent;color:var(--color-text-secondary);box-shadow:none;margin-top:var(--space-sm);padding: 6px 16px; font-size: 0.8rem;" onclick="closeWheel()">✕ Закрыть</button>
     </div>
 </div>
 
@@ -2636,7 +2652,7 @@ document.addEventListener('DOMContentLoaded', function() {
         legal: document.getElementById('page-legal')
     };
 
-    window.navigateTo = function(pageId) {
+        window.navigateTo = function(pageId) {
         for (var key in pages) {
             if (pages[key]) pages[key].classList.remove('active');
         }
@@ -2725,9 +2741,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('orderModal').classList.add('active');
         document.body.style.overflow = 'hidden';
     };
-    window.closeModal = function(id) {
-        document.getElementById(id || 'orderModal').classList.remove('active');
-        document.body.style.overflow = '';
+    window.closeModal = function(id = 'orderModal') {
+    document.getElementById(id).classList.remove('active');
+    document.body.style.overflow = '';
     };
     document.getElementById('orderModal').addEventListener('click', function(e) {
         if (e.target === this) closeModal('orderModal');
@@ -2823,7 +2839,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Валидация телефона
         var phone = orderPhone.value.trim();
         if (!validatePhone(phone)) {
-            alert('⚠️ Введите корректный номер телефона (от 10 до 12 цифр, начинается с 7 или 8).');
+            alert('⚠️ Введите корректный номер телефона (от 11 до 12 цифр, начинается с 7 или 8).');
             return;
         }
 
@@ -2906,10 +2922,10 @@ document.addEventListener('DOMContentLoaded', function() {
         { label: '22%', color: '#F59E0B', value: 22 },
         { label: '15%', color: '#8B5CF6', value: 15 },
         { label: '10%', color: '#F59E0B', value: 10 },
-        { label: '5%', color: '#6D28D9', value: 22 },
+        { label: '5%', color: '#6D28D9', value: 5 },
         { label: '7%', color: '#F59E0B', value: 7 },
         { label: 'Увы', color: '#9CA3AF', value: -1 },
-        { label: '13%', color: '#F59E0B', value: 22 },
+        { label: '13%', color: '#F59E0B', value: 13 },
         { label: '12%', color: '#8B5CF6', value: 12 },
     ];
 
@@ -3034,7 +3050,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 winType = '✅ ВЫИГРЫШ: ' + prize.value + '% скидка';
                 launchConfetti();
             } else {
-                resultText = '😊 Повезёт в другой раз!';
+                resultText = '🥵 Увы!';
                 winType = '❌ НЕ ВЫИГРАЛ: Повезёт в другой раз';
             }
 
@@ -3049,7 +3065,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (wheelAttempts >= MAX_ATTEMPTS) {
                 setTimeout(function() {
-                    wheelResult.textContent = '🔒 Попытка использована! Спасибо за игру!';
+                    wheelResult.textContent = '🔒 Спасибо за игру!';
                     wheelBtn.textContent = '🔒 Попытка использована';
                     wheelBtn.disabled = true;
                     wheelBtn.style.opacity = '0.5';
