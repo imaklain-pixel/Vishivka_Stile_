@@ -1,0 +1,60 @@
+// ============================================================
+// API ДЛЯ ПУБЛИКАЦИИ ОТЗЫВОВ (ПРИНИМАЕТ ЗАПРОСЫ ОТ WORKER)
+// ============================================================
+
+// Функция для публикации отзыва через API
+window.publishReviewFromAPI = function(reviewData) {
+    try {
+        // Получаем существующие отзывы
+        var published = JSON.parse(localStorage.getItem('publishedReviews') || '[]');
+        
+        // Проверяем, не опубликован ли уже этот отзыв
+        var exists = published.some(function(r) {
+            return r.id === reviewData.id;
+        });
+        
+        if (exists) {
+            console.log('⚠️ Отзыв уже опубликован:', reviewData.id);
+            return;
+        }
+        
+        // Добавляем новый отзыв
+        published.push({
+            id: reviewData.id,
+            name: reviewData.name,
+            rating: reviewData.rating,
+            text: reviewData.text,
+            photos: reviewData.photos || [],
+            publishedAt: new Date().toISOString()
+        });
+        
+        // Сохраняем
+        localStorage.setItem('publishedReviews', JSON.stringify(published));
+        
+        // Удаляем из ожидающих
+        var pending = JSON.parse(localStorage.getItem('pendingReviews') || '{}');
+        if (pending[reviewData.id]) {
+            delete pending[reviewData.id];
+            localStorage.setItem('pendingReviews', JSON.stringify(pending));
+        }
+        
+        console.log('✅ Отзыв опубликован:', reviewData.id);
+        
+        // Обновляем страницу
+        renderReviews();
+        
+        return true;
+    } catch (error) {
+        console.error('❌ Ошибка публикации:', error);
+        return false;
+    }
+};
+
+// --- API ДЛЯ ПОЛУЧЕНИЯ ОТЗЫВОВ ---
+window.getPublishedReviews = function() {
+    return JSON.parse(localStorage.getItem('publishedReviews') || '[]');
+};
+
+window.getPendingReviews = function() {
+    return JSON.parse(localStorage.getItem('pendingReviews') || '{}');
+};
