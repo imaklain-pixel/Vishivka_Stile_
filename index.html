@@ -3661,5 +3661,291 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 </script>
+<!-- ====== АДМИН-ПАНЕЛЬ (8 КЛИКОВ + ПАРОЛЬ) ====== -->
+<div id="adminPanel" style="display:none;position:fixed;bottom:80px;right:20px;z-index:99999;background:#fff;border-radius:16px;padding:24px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.2);max-height:80vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h3 style="margin:0;">✍️ Добавить отзыв</h3>
+        <button onclick="closeAdminPanel()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">✕</button>
+    </div>
+    
+    <form id="adminReviewForm">
+        <div style="margin-bottom:12px;">
+            <label style="display:block;font-weight:600;font-size:0.85rem;margin-bottom:4px;">Имя</label>
+            <input type="text" id="adminName" placeholder="Например: Александр" style="width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:10px;font-size:1rem;" required>
+        </div>
+        
+        <div style="margin-bottom:12px;">
+            <label style="display:block;font-weight:600;font-size:0.85rem;margin-bottom:4px;">Оценка</label>
+            <select id="adminRating" style="width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:10px;font-size:1rem;">
+                <option value="5">⭐⭐⭐⭐⭐ — Отлично</option>
+                <option value="4">⭐⭐⭐⭐ — Хорошо</option>
+                <option value="3">⭐⭐⭐ — Средне</option>
+                <option value="2">⭐⭐ — Плохо</option>
+                <option value="1">⭐ — Ужасно</option>
+            </select>
+        </div>
+        
+        <div style="margin-bottom:12px;">
+            <label style="display:block;font-weight:600;font-size:0.85rem;margin-bottom:4px;">Текст отзыва</label>
+            <textarea id="adminText" rows="3" placeholder="Что понравилось?" style="width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:10px;font-size:1rem;resize:vertical;" required></textarea>
+        </div>
+        
+        <div style="margin-bottom:12px;">
+            <label style="display:block;font-weight:600;font-size:0.85rem;margin-bottom:4px;">📸 Фото (до 20 МБ)</label>
+            <input type="file" id="adminPhoto" accept="image/*" style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:10px;">
+            <div style="font-size:0.75rem;color:#6B7280;margin-top:4px;">Максимальный размер — 20 МБ</div>
+            <div id="adminPhotoPreview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"></div>
+        </div>
+        
+        <button type="submit" style="width:100%;padding:12px;background:linear-gradient(135deg,#8B5CF6,#6D28D9);color:#fff;border:none;border-radius:50px;font-weight:700;font-size:1rem;cursor:pointer;">
+            ✅ Опубликовать отзыв
+        </button>
+    </form>
+    
+    <div id="adminSuccess" style="display:none;text-align:center;padding:20px;">
+        <span style="font-size:3rem;display:block;">✅</span>
+        <h3 style="color:#34C759;">Отзыв опубликован!</h3>
+        <p style="color:#6B7280;">Обновите страницу, чтобы увидеть</p>
+    </div>
+    
+    <hr style="margin:16px 0;border:1px solid #e5e7eb;">
+    
+    <div>
+        <h4 style="margin:0 0 8px;">📊 Всего отзывов: <span id="adminCount">0</span></h4>
+        <button onclick="clearAllReviews()" style="width:100%;padding:10px;background:#EF4444;color:#fff;border:none;border-radius:50px;font-weight:600;cursor:pointer;">
+            🗑️ Удалить все отзывы
+        </button>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// ОТКРЫТИЕ ПАНЕЛИ: 8 КЛИКОВ НА ЛОГОТИП + ПАРОЛЬ
+// ============================================================
+
+// 🔑 СМЕНИТЕ ПАРОЛЬ ЗДЕСЬ!
+var ADMIN_PASSWORD = '12345';  // ← Ваш пароль
+
+var clickCount = 0;
+var clickTimer = null;
+var isAdminPanelOpen = false;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Находим логотип
+    var logo = document.querySelector('.logo') || document.querySelector('.logo-gradient');
+    if (logo) {
+        logo.style.cursor = 'pointer';
+        logo.addEventListener('click', function(e) {
+            // Если панель уже открыта — закрываем
+            if (isAdminPanelOpen) {
+                closeAdminPanel();
+                return;
+            }
+            
+            clickCount++;
+            clearTimeout(clickTimer);
+            
+            // Показываем прогресс (опционально)
+            if (clickCount > 0 && clickCount < 8) {
+                showClickProgress(clickCount);
+            }
+            
+            // Если нажали 8 раз
+            if (clickCount >= 8) {
+                clickCount = 0;
+                // Спрашиваем пароль
+                var password = prompt('🔐 Введите пароль для входа в админ-панель:');
+                if (password === ADMIN_PASSWORD) {
+                    openAdminPanel();
+                } else if (password !== null) {
+                    alert('❌ Неверный пароль!');
+                }
+                hideClickProgress();
+            }
+            
+            clickTimer = setTimeout(function() {
+                clickCount = 0;
+                hideClickProgress();
+            }, 3000);
+        });
+    }
+});
+
+// --- Открыть панель ---
+function openAdminPanel() {
+    var panel = document.getElementById('adminPanel');
+    if (panel) {
+        panel.style.display = 'block';
+        isAdminPanelOpen = true;
+        updateAdminCount();
+        // Убираем подсказку о кликах
+        hideClickProgress();
+    }
+}
+
+// --- Закрыть панель ---
+function closeAdminPanel() {
+    var panel = document.getElementById('adminPanel');
+    if (panel) {
+        panel.style.display = 'none';
+        isAdminPanelOpen = false;
+        clickCount = 0;
+        hideClickProgress();
+    }
+}
+
+// --- Показать прогресс кликов ---
+function showClickProgress(count) {
+    var existing = document.getElementById('clickProgress');
+    if (!existing) {
+        var div = document.createElement('div');
+        div.id = 'clickProgress';
+        div.style.cssText = 'position:fixed;bottom:100px;right:20px;z-index:99999;background:rgba(0,0,0,0.7);color:#fff;padding:8px 16px;border-radius:50px;font-size:0.9rem;transition:all 0.3s;';
+        document.body.appendChild(div);
+    }
+    var el = document.getElementById('clickProgress');
+    if (el) {
+        el.textContent = '🔑 ' + count + '/8 кликов';
+        el.style.display = 'block';
+    }
+}
+
+function hideClickProgress() {
+    var el = document.getElementById('clickProgress');
+    if (el) {
+        el.style.display = 'none';
+    }
+}
+
+// ============================================================
+// ФУНКЦИИ ПАНЕЛИ
+// ============================================================
+
+function updateAdminCount() {
+    var published = JSON.parse(localStorage.getItem('publishedReviews') || '[]');
+    var el = document.getElementById('adminCount');
+    if (el) el.textContent = published.length;
+}
+
+// --- Превью фото ---
+document.addEventListener('DOMContentLoaded', function() {
+    var photoInput = document.getElementById('adminPhoto');
+    if (photoInput) {
+        photoInput.addEventListener('change', function() {
+            var preview = document.getElementById('adminPhotoPreview');
+            preview.innerHTML = '';
+            var files = Array.from(this.files);
+            
+            files.forEach(function(file) {
+                if (file.size > 20 * 1024 * 1024) {
+                    alert('Файл "' + file.name + '" превышает 20 МБ');
+                    return;
+                }
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = '70px';
+                    img.style.height = '70px';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = '8px';
+                    img.style.border = '1px solid #e5e7eb';
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+    }
+});
+
+// --- Добавление отзыва ---
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('adminReviewForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            var name = document.getElementById('adminName').value.trim();
+            var rating = document.getElementById('adminRating').value;
+            var text = document.getElementById('adminText').value.trim();
+            var fileInput = document.getElementById('adminPhoto');
+            
+            if (!name || !text) {
+                alert('Заполните имя и текст отзыва');
+                return;
+            }
+            
+            var photos = [];
+            var files = Array.from(fileInput.files);
+            
+            if (files.length > 0) {
+                var loadCount = 0;
+                files.forEach(function(file) {
+                    if (file.size > 20 * 1024 * 1024) {
+                        alert('Файл "' + file.name + '" превышает 20 МБ');
+                        return;
+                    }
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        photos.push(e.target.result);
+                        loadCount++;
+                        if (loadCount === files.length) {
+                            saveAdminReview(name, rating, text, photos);
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+            } else {
+                saveAdminReview(name, rating, text, photos);
+            }
+        });
+    }
+});
+
+function saveAdminReview(name, rating, text, photos) {
+    var published = JSON.parse(localStorage.getItem('publishedReviews') || '[]');
+    published.push({
+        id: 'admin_' + Date.now(),
+        name: name,
+        rating: rating,
+        text: text,
+        photos: photos,
+        publishedAt: new Date().toISOString()
+    });
+    localStorage.setItem('publishedReviews', JSON.stringify(published));
+    
+    document.getElementById('adminReviewForm').style.display = 'none';
+    document.getElementById('adminSuccess').style.display = 'block';
+    updateAdminCount();
+    
+    setTimeout(function() {
+        document.getElementById('adminReviewForm').style.display = 'block';
+        document.getElementById('adminSuccess').style.display = 'none';
+        document.getElementById('adminReviewForm').reset();
+        document.getElementById('adminPhotoPreview').innerHTML = '';
+        if (typeof renderReviews === 'function') {
+            renderReviews();
+        }
+    }, 2000);
+}
+
+// --- Удаление всех отзывов ---
+function clearAllReviews() {
+    if (confirm('Вы уверены, что хотите удалить ВСЕ отзывы?')) {
+        localStorage.removeItem('publishedReviews');
+        localStorage.removeItem('pendingReviews');
+        if (typeof renderReviews === 'function') {
+            renderReviews();
+        }
+        updateAdminCount();
+        alert('✅ Все отзывы удалены!');
+    }
+}
+
+// Обновляем счётчик при загрузке
+document.addEventListener('DOMContentLoaded', function() {
+    updateAdminCount();
+});
+</script>
 </body>
 </html>
