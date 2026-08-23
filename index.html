@@ -3661,7 +3661,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 </script>
-<!-- ====== АДМИН-ПАНЕЛЬ (8 КЛИКОВ + ПАРОЛЬ) ====== -->
+<!-- ====== АДМИН-ПАНЕЛЬ (8 КЛИКОВ НА ЛОГОТИП В ПОДВАЛЕ + ПАРОЛЬ) ====== -->
 <div id="adminPanel" style="display:none;position:fixed;bottom:80px;right:20px;z-index:99999;background:#fff;border-radius:16px;padding:24px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.2);max-height:80vh;overflow-y:auto;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
         <h3 style="margin:0;">✍️ Добавить отзыв</h3>
@@ -3720,22 +3720,60 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script>
 // ============================================================
-// ОТКРЫТИЕ ПАНЕЛИ: 8 КЛИКОВ НА ЛОГОТИП + ПАРОЛЬ
+// ОТКРЫТИЕ ПАНЕЛИ: 8 КЛИКОВ НА ЛОГОТИП В ПОДВАЛЕ + ПАРОЛЬ
 // ============================================================
 
 // 🔑 СМЕНИТЕ ПАРОЛЬ ЗДЕСЬ!
-var ADMIN_PASSWORD = '12345';  // ← Ваш пароль
+var ADMIN_PASSWORD = '77521';  // ← Ваш пароль
 
 var clickCount = 0;
 var clickTimer = null;
 var isAdminPanelOpen = false;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Находим логотип
-    var logo = document.querySelector('.logo') || document.querySelector('.logo-gradient');
-    if (logo) {
-        logo.style.cursor = 'pointer';
-        logo.addEventListener('click', function(e) {
+    // Находим логотип в подвале (футере)
+    // Ищем по тексту "✦ Вышивка Стиль" в footer
+    var footerLogo = null;
+    
+    // Вариант 1: Ищем элемент с классом .logo в футере
+    var footerElements = document.querySelectorAll('.footer .logo, footer .logo, .footer .logo-gradient, footer .logo-gradient');
+    if (footerElements.length > 0) {
+        footerLogo = footerElements[0];
+    }
+    
+    // Вариант 2: Ищем по тексту в футере
+    if (!footerLogo) {
+        var allFooterText = document.querySelectorAll('.footer p, footer p, .footer div, footer div');
+        for (var i = 0; i < allFooterText.length; i++) {
+            if (allFooterText[i].textContent && allFooterText[i].textContent.includes('Вышивка Стиль')) {
+                footerLogo = allFooterText[i];
+                break;
+            }
+        }
+    }
+    
+    // Вариант 3: Ищем любой элемент с текстом "✦ Вышивка Стиль"
+    if (!footerLogo) {
+        var allElements = document.querySelectorAll('*');
+        for (var i = 0; i < allElements.length; i++) {
+            if (allElements[i].textContent && allElements[i].textContent.trim() === '✦ Вышивка Стиль') {
+                footerLogo = allElements[i];
+                break;
+            }
+        }
+    }
+    
+    if (footerLogo) {
+        footerLogo.style.cursor = 'pointer';
+        footerLogo.style.position = 'relative';
+        footerLogo.style.zIndex = '9999';
+        
+        // Добавляем подсказку (только для вас)
+        footerLogo.title = 'Нажмите 8 раз для входа в админ-панель';
+        
+        footerLogo.addEventListener('click', function(e) {
+            e.stopPropagation();
+            
             // Если панель уже открыта — закрываем
             if (isAdminPanelOpen) {
                 closeAdminPanel();
@@ -3745,7 +3783,7 @@ document.addEventListener('DOMContentLoaded', function() {
             clickCount++;
             clearTimeout(clickTimer);
             
-            // Показываем прогресс (опционально)
+            // Показываем прогресс
             if (clickCount > 0 && clickCount < 8) {
                 showClickProgress(clickCount);
             }
@@ -3768,6 +3806,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 hideClickProgress();
             }, 3000);
         });
+    } else {
+        console.warn('⚠️ Логотип в подвале не найден!');
     }
 });
 
@@ -3778,7 +3818,6 @@ function openAdminPanel() {
         panel.style.display = 'block';
         isAdminPanelOpen = true;
         updateAdminCount();
-        // Убираем подсказку о кликах
         hideClickProgress();
     }
 }
@@ -3800,12 +3839,19 @@ function showClickProgress(count) {
     if (!existing) {
         var div = document.createElement('div');
         div.id = 'clickProgress';
-        div.style.cssText = 'position:fixed;bottom:100px;right:20px;z-index:99999;background:rgba(0,0,0,0.7);color:#fff;padding:8px 16px;border-radius:50px;font-size:0.9rem;transition:all 0.3s;';
+        div.style.cssText = 'position:fixed;bottom:100px;right:20px;z-index:99999;background:rgba(0,0,0,0.8);color:#fff;padding:10px 20px;border-radius:50px;font-size:0.95rem;font-weight:600;transition:all 0.3s;box-shadow:0 4px 20px rgba(0,0,0,0.3);';
         document.body.appendChild(div);
     }
     var el = document.getElementById('clickProgress');
     if (el) {
-        el.textContent = '🔑 ' + count + '/8 кликов';
+        var dots = '';
+        for (var i = 0; i < count; i++) {
+            dots += '●';
+        }
+        for (var j = count; j < 8; j++) {
+            dots += '○';
+        }
+        el.textContent = '🔑 ' + dots + ' (' + count + '/8)';
         el.style.display = 'block';
     }
 }
