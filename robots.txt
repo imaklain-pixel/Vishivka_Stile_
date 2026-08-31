@@ -1,3 +1,9 @@
 User-agent: *
 Allow: /
 Sitemap: https://stylevishivka.ru/sitemap.xml
+
+# Запрещаем индексацию служебных страниц
+Disallow: /cdn-cgi/
+Disallow: /wp-*
+Disallow: /feed/
+Disallow: /trackback/
