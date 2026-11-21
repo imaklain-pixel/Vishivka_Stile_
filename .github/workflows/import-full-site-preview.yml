@@ -1,10 +1,8 @@
 name: Import full site preview
 on:
-  push:
+  pull_request:
     branches:
-      - preview/full-site-2026
-    paths:
-      - .github/workflows/import-full-site-preview.yml
+      - main
 permissions:
   contents: write
 jobs:
