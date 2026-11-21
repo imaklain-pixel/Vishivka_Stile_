@@ -1,0 +1,51 @@
+name: Import full site preview
+on:
+  pull_request:
+    branches:
+      - main
+permissions:
+  contents: write
+jobs:
+  import:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: preview/full-site-2026
+      - name: Import prepared website from source repository
+        run: |
+          set -euo pipefail
+          git clone --depth 1 --branch assets/optimize-portfolio-images https://github.com/imaklain-pixel/stylevishivka.git /tmp/prepared-site
+          rsync -a --delete \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='scripts/' \
+            --exclude='CNAME' \
+            --exclude='logo.png' \
+            --exclude='favicon.ico' \
+            --exclude='google1262adbc46e67ad2.html' \
+            --exclude='yandex_5619f032338a5757.html' \
+            /tmp/prepared-site/ ./
+          python - <<'PY'
+          from pathlib import Path
+          old = 'https://raw.githubusercontent.com/imaklain-pixel/Vishivka_Stile_/main/logo.png'
+          for path in Path('.').rglob('*'):
+              if path.is_file() and path.suffix.lower() in {'.html', '.css', '.js', '.json', '.xml'}:
+                  try:
+                      text = path.read_text(encoding='utf-8')
+                  except (UnicodeDecodeError, OSError):
+                      continue
+                  updated = text.replace(old, '/logo.png')
+                  if updated != text:
+                      path.write_text(updated, encoding='utf-8')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to import"
+          else
+            git commit -m "Import prepared website for isolated preview"
+            git push origin HEAD:preview/full-site-2026
+          fi
